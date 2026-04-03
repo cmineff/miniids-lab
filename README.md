@@ -1,33 +1,135 @@
+# 🛡️ MiniIDS Lab Platform
+
+> Uma plataforma educacional de Detecção de Intrusão (IDS) para laboratório, construída com Python, FastAPI, PostgreSQL e dashboard web.
+
+![Status](https://img.shields.io/badge/status-MVP%20concluído-brightgreen)
+![Python](https://img.shields.io/badge/python-3.14-blue)
+![FastAPI](https://img.shields.io/badge/FastAPI-0.100+-green)
+![License](https://img.shields.io/badge/license-MIT-lightgrey)
+
+---
+
+## 📌 Sobre o projeto
+
+O **MiniIDS Lab Platform** é uma plataforma web de detecção de intrusão desenvolvida com foco educacional. Ela permite ingerir eventos de segurança, aplicar regras de detecção configuráveis, gerar alertas automáticos e visualizar tudo em um dashboard web completo.
+
+O projeto foi criado para preencher uma lacuna real no mercado: ferramentas profissionais como Suricata, Snort e SIEMs são poderosas, mas inacessíveis para quem está aprendendo. O MiniIDS é simples o suficiente para entender, e estruturado o suficiente para ser real.
+
+---
+
+## 🎯 Funcionalidades
+
+- ✅ Autenticação JWT com controle de acesso por papel (admin / analyst)
+- ✅ Ingestão de eventos de segurança via API
+- ✅ Motor de detecção com regras configuráveis
+- ✅ Geração automática de alertas
+- ✅ CRUD completo de regras de detecção
+- ✅ Ativar/desativar regras sem alterar código
+- ✅ Dashboard web com métricas em tempo real
+- ✅ Telas de eventos, alertas e regras
+- ✅ Filtros por severidade e status nos alertas
+- ✅ Paginação de eventos e alertas
+- ✅ Logs estruturados de todas as operações
+- ✅ Simulador de eventos com cenários reais
+- ✅ Documentação automática via Swagger UI
+
+---
+
+## 🧱 Arquitetura
+
+    [ Fonte de Eventos / Simulador ]
+            |
+            v
+    [ API de Ingestão ]
+            |
+            v
+    [ Motor de Detecção ]
+            |
+       +---------+
+       |         |
+       v         v
+    [Eventos] [Alertas]
+            |
+            v
+    [ PostgreSQL ]
+            |
+            v
+    [ Dashboard Web ]
+
+---
+
+## 🚀 Stack tecnológica
+
+| Camada   | Tecnologia              |
+| -------- | ----------------------- |
+| Backend  | Python 3.14 + FastAPI   |
+| Banco    | PostgreSQL 16 (Docker)  |
+| Frontend | HTML + CSS + JavaScript |
+| Infra    | Docker + Docker Compose |
+| Auth     | JWT + bcrypt            |
+| Logs     | Python logging          |
+
+---
+
+## 🗂️ Estrutura do projeto
+
+    miniids-lab/
+    ├── backend/
+    │   ├── app/
+    │   │   ├── api/routes/      # endpoints
+    │   │   ├── core/            # segurança, logs e dependências
+    │   │   ├── db/              # conexão e sessão
+    │   │   ├── detection/       # motor de detecção
+    │   │   ├── models/          # tabelas do banco
+    │   │   └── schemas/         # validação de dados
+    │   └── main.py
+    ├── frontend/
+    │   ├── login.html
+    │   ├── index.html
+    │   ├── events.html
+    │   ├── alerts.html
+    │   ├── rules.html
+    │   ├── css/styles.css
+    │   └── js/
+    ├── simulator/
+    │   ├── generate_events.py
+    │   └── sample_events.json
+    ├── docker-compose.yml
+    └── README.md
+
 ---
 
 ## ⚙️ Como rodar localmente
-```bash
-# Clone o repositório
-git clone https://github.com/cmineff/miniids-lab.git
-cd miniids-lab
 
-# Crie e ative o ambiente virtual
-python -m venv venv
-venv\Scripts\Activate.ps1  # Windows
+1.  Clone o repositório
 
-# Instale as dependências
-pip install fastapi uvicorn sqlalchemy psycopg2-binary python-dotenv
-pip install passlib[bcrypt] python-jose[cryptography] email-validator requests
-pip install bcrypt==4.0.1
+        git clone https://github.com/cmineff/miniids-lab.git
+        cd miniids-lab
 
-# Suba o banco de dados
-docker-compose up -d
+2.  Crie e ative o ambiente virtual
 
-# Configure o .env
-DATABASE_URL=postgresql://miniids:miniids123@localhost:5432/miniids_db
-SECRET_KEY=sua-chave-secreta-aqui
+        python -m venv venv
+        venv\Scripts\Activate.ps1
 
-# Rode a API
-cd backend
-uvicorn main:app --reload
-```
+3.  Instale as dependências
 
-Acesse em: `http://127.0.0.1:8000`
+        pip install -r backend/requirements.txt
+
+4.  Suba o banco de dados
+
+        docker-compose up -d
+
+5.  Configure o arquivo `.env` na raiz do projeto
+
+        DATABASE_URL=postgresql://miniids:miniids123@localhost:5432/miniids_db
+        SECRET_KEY=sua-chave-secreta-aqui
+
+6.  Rode a API
+
+        cd backend
+        uvicorn main:app --reload
+
+7.  Acesse em `http://127.0.0.1:8000`
 
 ---
 
@@ -35,24 +137,20 @@ Acesse em: `http://127.0.0.1:8000`
 
 Crie o usuário admin via Swagger em `http://127.0.0.1:8000/docs`:
 
-```json
-POST /auth/register
-{
-  "name": "Seu Nome",
-  "email": "seu@email.com",
-  "password": "suasenha",
-  "role": "admin"
-}
-```
+    POST /auth/register
+    {
+      "name": "Seu Nome",
+      "email": "seu@email.com",
+      "password": "suasenha",
+      "role": "admin"
+    }
 
 ---
 
 ## 🧪 Simulador de eventos
 
-```bash
-cd simulator
-python generate_events.py
-```
+    cd simulator
+    python generate_events.py
 
 Cenários disponíveis:
 
