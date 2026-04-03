@@ -290,3 +290,25 @@ tr:hover td { background: #232940; }
     padding: 40px;
     color: #666;
 }
+
+/* FILTERS */
+.filters {
+    display: flex;
+    gap: 12px;
+    margin-bottom: 20px;
+}
+
+.filters select {
+    padding: 10px 14px;
+    background: #1e2433;
+    border: 1px solid #2a3050;
+    border-radius: 6px;
+    color: #e0e0e0;
+    font-size: 13px;
+    cursor: pointer;
+}
+
+.filters select:focus {
+    outline: none;
+    border-color: #4a9eff;
+}

@@ -1,7 +1,11 @@
-async function loadAlerts() {
+async function loadAlerts(severity = '', status = '') {
     checkAuth();
 
-    const alerts = await apiFetch('/alerts/');
+    let url = '/alerts/?limit=100';
+    if (severity) url += `&severity=${severity}`;
+    if (status) url += `&status=${status}`;
+
+    const alerts = await apiFetch(url);
     const tbody = document.getElementById('alerts-table');
     tbody.innerHTML = '';
 
@@ -10,7 +14,7 @@ async function loadAlerts() {
         return;
     }
 
-    alerts.slice().reverse().forEach(alert => {
+    alerts.forEach(alert => {
         tbody.innerHTML += `
             <tr>
                 <td>${alert.id}</td>
@@ -24,4 +28,23 @@ async function loadAlerts() {
     });
 }
 
-document.addEventListener('DOMContentLoaded', loadAlerts);
+async function updateStatus(alertId, status) {
+    await apiFetch(`/alerts/${alertId}/status?status=${status}`, { method: 'PATCH' });
+    loadAlerts();
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+    loadAlerts();
+
+    document.getElementById('filter-severity').addEventListener('change', () => {
+        const severity = document.getElementById('filter-severity').value;
+        const status = document.getElementById('filter-status').value;
+        loadAlerts(severity, status);
+    });
+
+    document.getElementById('filter-status').addEventListener('change', () => {
+        const severity = document.getElementById('filter-severity').value;
+        const status = document.getElementById('filter-status').value;
+        loadAlerts(severity, status);
+    });
+});

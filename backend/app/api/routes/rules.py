@@ -5,8 +5,10 @@ from app.models.rule import Rule
 from app.models.user import User
 from app.schemas.rule import RuleCreate, RuleResponse
 from app.core.dependencies import get_current_user, require_admin
+from app.core.logging import setup_logger
 from typing import List
 
+logger = setup_logger("rules")
 router = APIRouter()
 
 @router.post("/", response_model=RuleResponse)
@@ -15,6 +17,7 @@ def create_rule(rule: RuleCreate, db: Session = Depends(get_db), current_user: U
     db.add(db_rule)
     db.commit()
     db.refresh(db_rule)
+    logger.info(f"Regra criada: ID {db_rule.id} | nome={db_rule.name} | usuário={current_user.email}")
     return db_rule
 
 @router.get("/", response_model=List[RuleResponse])
@@ -36,6 +39,8 @@ def toggle_rule(rule_id: int, db: Session = Depends(get_db), current_user: User 
     rule.is_active = not rule.is_active
     db.commit()
     db.refresh(rule)
+    status = "ativada" if rule.is_active else "desativada"
+    logger.info(f"Regra ID {rule_id} {status} | usuário={current_user.email}")
     return rule
 
 @router.delete("/{rule_id}")
@@ -45,4 +50,5 @@ def delete_rule(rule_id: int, db: Session = Depends(get_db), current_user: User 
         raise HTTPException(status_code=404, detail="Regra não encontrada")
     db.delete(rule)
     db.commit()
+    logger.warning(f"Regra ID {rule_id} removida | usuário={current_user.email}")
     return {"message": "Regra removida com sucesso"}

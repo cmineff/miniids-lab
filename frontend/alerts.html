@@ -23,8 +23,24 @@
         </aside>
         <main class="main-content">
             <h1 class="page-title">Alertas</h1>
+            <div class="filters">
+                <select id="filter-severity">
+                    <option value="">Todas as severidades</option>
+                    <option value="low">Low</option>
+                    <option value="medium">Medium</option>
+                    <option value="high">High</option>
+                    <option value="critical">Critical</option>
+                </select>
+                <select id="filter-status">
+                    <option value="">Todos os status</option>
+                    <option value="open">Open</option>
+                    <option value="investigating">Investigating</option>
+                    <option value="closed">Closed</option>
+                    <option value="false_positive">False Positive</option>
+                </select>
+            </div>
             <div class="table-container">
-                <div class="table-header">Todos os Alertas</div>
+                <div class="table-header">Alertas Gerados</div>
                 <table>
                     <thead>
                         <tr>
