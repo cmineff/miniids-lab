@@ -1,0 +1,82 @@
+[
+  {
+    "scenario": "ssh_brute_force",
+    "description": "Tentativas repetidas de login SSH falhado do mesmo IP",
+    "events": [
+      {
+        "source_ip": "203.0.113.42",
+        "destination_ip": "192.168.1.10",
+        "source_port": 54231,
+        "destination_port": 22,
+        "protocol": "tcp",
+        "event_type": "login_failed",
+        "username": "root",
+        "hostname": "server-prod-01",
+        "message": "Failed SSH login attempt",
+        "severity_hint": "medium",
+        "raw_data": { "service": "ssh", "reason": "invalid_password" }
+      }
+    ],
+    "repeat": 7
+  },
+  {
+    "scenario": "admin_login_fora_horario",
+    "description": "Login administrativo fora do horário comercial",
+    "events": [
+      {
+        "source_ip": "10.0.0.99",
+        "destination_ip": "192.168.1.1",
+        "source_port": 61000,
+        "destination_port": 443,
+        "protocol": "tcp",
+        "event_type": "admin_login",
+        "username": "admin",
+        "hostname": "server-mgmt-01",
+        "message": "Administrative login outside business hours",
+        "severity_hint": "high",
+        "raw_data": { "service": "web", "hour": 3 }
+      }
+    ],
+    "repeat": 1
+  },
+  {
+    "scenario": "port_scan",
+    "description": "Varredura de portas de um único IP",
+    "events": [
+      {
+        "source_ip": "198.51.100.77",
+        "destination_ip": "192.168.1.10",
+        "source_port": 12345,
+        "destination_port": 80,
+        "protocol": "tcp",
+        "event_type": "port_scan_attempt",
+        "username": null,
+        "hostname": "server-prod-01",
+        "message": "Port scan detected",
+        "severity_hint": "medium",
+        "raw_data": { "service": "unknown", "reason": "port_scan" }
+      }
+    ],
+    "repeat": 12
+  },
+  {
+    "scenario": "login_normal",
+    "description": "Logins normais bem sucedidos",
+    "events": [
+      {
+        "source_ip": "192.168.1.50",
+        "destination_ip": "192.168.1.10",
+        "source_port": 55000,
+        "destination_port": 22,
+        "protocol": "tcp",
+        "event_type": "login_success",
+        "username": "developer",
+        "hostname": "server-prod-01",
+        "message": "Successful SSH login",
+        "severity_hint": "low",
+        "raw_data": { "service": "ssh", "reason": "authenticated" }
+      }
+    ],
+    "repeat": 3
+  }
+]
