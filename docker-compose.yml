@@ -1,0 +1,16 @@
+services:
+  db:
+    image: postgres:16
+    container_name: miniids-postgres
+    restart: always
+    environment:
+      POSTGRES_USER: miniids
+      POSTGRES_PASSWORD: miniids123
+      POSTGRES_DB: miniids_db
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+volumes:
+  postgres_data:
