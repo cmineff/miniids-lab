@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MiniIDS Lab — Eventos</title>
+    <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+    <div class="layout">
+        <aside class="sidebar">
+            <div class="sidebar-logo">
+                <h2>🛡️ MiniIDS Lab</h2>
+                <span>Detecção de Intrusão</span>
+            </div>
+            <a href="index.html">📊 Dashboard</a>
+            <a href="events.html" class="active">📡 Eventos</a>
+            <a href="alerts.html">🚨 Alertas</a>
+            <a href="rules.html">📋 Regras</a>
+            <div class="sidebar-footer">
+                <button onclick="logout()">Sair</button>
+            </div>
+        </aside>
+        <main class="main-content">
+            <h1 class="page-title">Eventos</h1>
+            <div class="table-container">
+                <div class="table-header">Todos os Eventos</div>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>IP Origem</th>
+                            <th>IP Destino</th>
+                            <th>Tipo</th>
+                            <th>Mensagem</th>
+                            <th>Data</th>
+                        </tr>
+                    </thead>
+                    <tbody id="events-table">
+                        <tr><td colspan="6" class="loading">Carregando...</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </main>
+    </div>
+    <script src="js/api.js"></script>
+    <script src="js/auth.js"></script>
+    <script src="js/events.js"></script>
+</body>
+</html>
