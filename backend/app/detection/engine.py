@@ -2,32 +2,39 @@ from sqlalchemy.orm import Session
 from sqlalchemy import func
 from app.models.event import Event
 from app.models.alert import Alert
+from app.models.rule import Rule
 from datetime import datetime, timedelta
 
 def evaluate_event(event: Event, db: Session):
     alerts = []
 
-    if event.event_type == "login_failed":
-        window_start = datetime.utcnow() - timedelta(seconds=120)
+    rules = db.query(Rule).filter(
+        Rule.event_type == event.event_type,
+        Rule.is_active == True
+    ).all()
 
-        recent_failures = db.query(func.count(Event.id)).filter(
-            Event.source_ip == event.source_ip,
-            Event.event_type == "login_failed",
-            Event.created_at >= window_start
-        ).scalar()
+    for rule in rules:
+        window_start = datetime.utcnow() - timedelta(seconds=rule.window_seconds)
 
-        print(f"DEBUG - IP: {event.source_ip} | Falhas: {recent_failures} | Janela desde: {window_start}")
+        if rule.condition_type == "count_by_source_ip":
+            count = db.query(func.count(Event.id)).filter(
+                Event.source_ip == event.source_ip,
+                Event.event_type == event.event_type,
+                Event.created_at >= window_start
+            ).scalar()
 
-        if recent_failures >= 5:
-            alert = Alert(
-                event_id=event.id,
-                title="Possível ataque de Brute Force",
-                description=f"IP {event.source_ip} gerou {recent_failures} falhas de login nos últimos 2 minutos.",
-                severity="high",
-                source_ip=event.source_ip
-            )
-            db.add(alert)
-            db.commit()
-            alerts.append(alert)
+            print(f"DEBUG - Regra: {rule.name} | IP: {event.source_ip} | Count: {count} | Threshold: {rule.threshold}")
+
+            if count >= rule.threshold:
+                alert = Alert(
+                    event_id=event.id,
+                    title=f"Alerta: {rule.name}",
+                    description=f"IP {event.source_ip} ativou a regra '{rule.name}' com {count} ocorrências nos últimos {rule.window_seconds} segundos.",
+                    severity=rule.severity,
+                    source_ip=event.source_ip
+                )
+                db.add(alert)
+                db.commit()
+                alerts.append(alert)
 
     return alerts

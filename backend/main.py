@@ -1,8 +1,8 @@
 from fastapi import FastAPI
 from app.db.base import Base
 from app.db.session import engine
-from app.api.routes import events, alerts
-from app.models import event, alert
+from app.api.routes import events, alerts, rules
+from app.models import event, alert, rule
 
 Base.metadata.create_all(bind=engine)
 
@@ -10,6 +10,7 @@ app = FastAPI(title="MiniIDS Lab Platform")
 
 app.include_router(events.router, prefix="/events", tags=["events"])
 app.include_router(alerts.router, prefix="/alerts", tags=["alerts"])
+app.include_router(rules.router, prefix="/rules", tags=["rules"])
 
 @app.get("/")
 def root():
